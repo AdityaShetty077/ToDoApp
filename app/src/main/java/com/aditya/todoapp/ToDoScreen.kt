@@ -15,6 +15,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -27,9 +28,9 @@ import kotlin.collections.plus
 @Composable
 fun ToDoScreen(modifier: Modifier = Modifier)
 {
-    var text by remember { mutableStateOf("") }
-    var tasks by remember { mutableStateOf(listOf<Task>()) }
-    var nextId by remember { mutableStateOf(1) }
+    var text by rememberSaveable { mutableStateOf("") }
+    var tasks by rememberSaveable { mutableStateOf(listOf<Task>()) }
+    var nextId by rememberSaveable { mutableStateOf(1) }
 
     Column(modifier = modifier.padding(16.dp)) {
        TaskInput(text=text, onTextChange = {newText -> text= newText}, onAdd = {
