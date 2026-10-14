@@ -22,23 +22,21 @@ import androidx.compose.ui.text.style.TextDecoration
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.aditya.todoapp.ui.theme.ToDoAppTheme
+import androidx.lifecycle.viewmodel.compose.viewModel
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
 
 @Composable
-fun ToDoScreen(modifier: Modifier = Modifier) {
+fun ToDoScreen(modifier: Modifier = Modifier,
+               viewModel: TodoViewModel = viewModel()) {
     var text by rememberSaveable { mutableStateOf("") }
-    var tasks by rememberSaveable { mutableStateOf(listOf<Task>()) }
-    var nextId by rememberSaveable { mutableStateOf(1) }
-
+    val tasks by viewModel.tasks.collectAsStateWithLifecycle()
     Column(modifier = modifier.padding(16.dp)) {
         TaskInput(
             text = text,
             onTextChange = { newText -> text = newText },
             onAdd = {
-                if (text.isNotBlank()) {
-                    tasks = tasks + Task(nextId, text)
-                    text = ""
-                    nextId++
-                }
+                viewModel.addTask(text)
+                text = ""
             }
         )
 
@@ -47,10 +45,10 @@ fun ToDoScreen(modifier: Modifier = Modifier) {
                 TaskRow(
                     task = task,
                     onToggle = {
-                        tasks = tasks.map { if (it.id == task.id) it.copy(isDone = !it.isDone) else it }
+                       viewModel.toggleTask(task.id)
                     },
                     onDelete = {
-                        tasks = tasks.filter { it.id != task.id }
+                        viewModel.deleteTask(task.id)
                     }
                 )
             }
